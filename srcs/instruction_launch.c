@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/27 19:27:14 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/03 14:15:43 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 20:54:14 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ static void	exe_pc(t_op *ops)
 
 void		instruction_launch(void)
 {
-	int 			i;
-	t_op			ops[NB_INSTRUCTIONS];
+	int			i;
+	t_op		ops[NB_INSTRUCTIONS];
 
 	init_func(ops);
 	while (g_pc)

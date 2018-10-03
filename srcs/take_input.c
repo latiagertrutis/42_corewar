@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 19:12:49 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/01 19:02:43 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 21:49:31 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,17 @@ static char				check_file(const char *str)
 	i = 0;
 	while (str[i])
 		i++;
-	if (i < 4 || str[i - 4] != '.' || str[i - 3] != 'c' || str[i - 2] != 'o' || str[i - 1] != 'r')
+	if (i < 4 || str[i - 4] != '.' || str[i - 3] != 'c' ||
+		str[i - 2] != 'o' || str[i - 1] != 'r')
 		return (0);
-	return(1);
+	return (1);
 }
-static uint32_t			count_players(const int ac, const char **av, unsigned int *flags, t_flag_value *f_value)
+
+static uint32_t			count_players(const int ac, const char **av,
+								unsigned int *flags, t_flag_value *f_value)
 {
 	unsigned char	i;
-	uint32_t	rtn;
+	uint32_t		rtn;
 
 	i = 1;
 	rtn = 0;
@@ -45,11 +48,13 @@ static uint32_t			count_players(const int ac, const char **av, unsigned int *fla
 	}
 	if ((rtn & 0xFF) > MAX_PLAYERS)
 		ft_error("Error: Too much players\n");
-	return(rtn);
+	return (rtn);
 }
-void					take_input(const int ac, const char **av, unsigned int *flags, t_flag_value *f_value)
+
+void					take_input(const int ac, const char **av,
+						unsigned int *flags, t_flag_value *f_value)
 {
-	unsigned char 	i;
+	unsigned char	i;
 	uint32_t		player_pos;
 
 	i = 1;

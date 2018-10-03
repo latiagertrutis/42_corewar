@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/28 17:43:53 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/01 19:01:05 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 20:23:14 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,15 @@ void			instruc_core_lfork(t_pc *pc)
 	new_i = ft_mod(pos + indirect, MEM_SIZE);
 	if (!(new_pc = (t_pc *)malloc(sizeof(t_pc))))
 		ft_error("Error: malloc failed in core_fork.\n");
-	*new_pc = (t_pc){pc->carry, new_i, 0, {{0}}, pc->id, 0, pc->live, g_nb_pc_total, g_pc};
+	*new_pc = (t_pc){pc->carry, new_i, 0, {{0}}, pc->id, 0,
+						pc->live, g_nb_pc_total, g_pc};
 	while (i < REG_NUMBER)
 	{
 		*((REG_CAST *)(new_pc->reg[i])) = *((REG_CAST *)(pc->reg[i]));
 		i++;
 	}
-	ft_printf("P %4d | lfork %d (%d)\n", pc->pc_num + 1, indirect, pos + indirect);
+	ft_printf("P %4d | lfork %d (%d)\n",
+				pc->pc_num + 1, indirect, pos + indirect);
 	g_pc = new_pc;
 	g_nb_pc++;
 	g_nb_pc_total++;

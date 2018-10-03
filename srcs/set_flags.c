@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 18:46:04 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/01 19:02:17 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 21:11:29 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static unsigned char	take_player_nb(const char *str, t_flag_value *f_value)
 {
-	unsigned int	 i;
-	int32_t				num;
+	unsigned int	i;
+	int32_t			num;
 
 	i = 1;
 	if (ft_issdigit((char *)str))
@@ -29,7 +29,8 @@ static unsigned char	take_player_nb(const char *str, t_flag_value *f_value)
 	return (2);
 }
 
-int						set_flags(const int ac, const char **av, unsigned int *flags, t_flag_value *f_value)
+int						set_flags(const int ac, const char **av,
+									unsigned int *flags, t_flag_value *f_value)
 {
 	unsigned char i;
 	unsigned char ret;
@@ -38,15 +39,15 @@ int						set_flags(const int ac, const char **av, unsigned int *flags, t_flag_va
 	ret = 1;
 	while (av[0][i])
 	{
-		if (av[0][i] == 'v')//visualicer
+		if (av[0][i] == 'v')
 			*flags |= 0x1;
-		else if (av[0][i] == 'f')//fullscreen
+		else if (av[0][i] == 'f')
 			*flags |= 0x2;
-		else if (av[0][i] == 'i')//instructions
+		else if (av[0][i] == 'i')
 			*flags |= 0x4;
-		else if (av[0][i] == 'd')//deaths
+		else if (av[0][i] == 'd')
 			*flags |= 0x8;
-		else if (ac > 1 && av[0][i] == 'n')//number
+		else if (ac > 1 && av[0][i] == 'n')
 			ret = take_player_nb(av[1], f_value);
 		else
 			ft_error("Error: invalid flag.\n");
@@ -54,3 +55,11 @@ int						set_flags(const int ac, const char **av, unsigned int *flags, t_flag_va
 	}
 	return (ret);
 }
+
+/*
+** v: viusualizer
+** f: fullscreen
+** i: instructions
+** d: deaths
+** n: numbers
+*/

@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/30 21:39:29 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/01 15:54:19 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 21:32:35 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,18 @@
 static char	verify_ocp(const unsigned char ocp)
 {
 	if ((0xC0 & ocp) == 0x0 ||
-	    (0x30 & ocp) == 0x0 || (0x30 & ocp) == 0x30 ||
-	    (0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)
+		(0x30 & ocp) == 0x0 || (0x30 & ocp) == 0x30 ||
+		(0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)
 		return (0);
 	return (1);
 }
 
-static void	load_indirect(const t_arg arg1, const t_arg arg2, const unsigned char reg_pos, t_pc *pc)
+static void	load_indirect(const t_arg arg1, const t_arg arg2,
+							const unsigned char reg_pos, t_pc *pc)
 {
 	int				inc;
 	unsigned int	pos;
-	unsigned char 	i;
+	unsigned char	i;
 	REG_CAST		value1;
 	REG_CAST		value2;
 
@@ -44,13 +45,22 @@ static void	load_indirect(const t_arg arg1, const t_arg arg2, const unsigned cha
 			i++;
 		}
 	}
-	if (value1 < 0)
-	value1 = ft_mod(value1, MEM_SIZE);
-	if (value2 < 0)
-	value2 = ft_mod(value2, MEM_SIZE);
-	inc = value1 + value2 + pos;
-	ft_printf("P %4d | lldi %d %d r%d\n       | -> load from %d + %d = %d (with pc %d)\n",
-	          pc->pc_num + 1, value1, value2, reg_pos + 1, value1, value2, value1 + value2, inc);
+	ft_printf("P %4d | lldi %d %d r%d\n       | -> load from %d + %d = %d (\
+with pc %d)\n", pc->pc_num + 1, value1, value2, reg_pos + 1, value1,
+				value2, value1 + value2, inc);
+}
+
+static void	convert_args_little_endian_load(t_arg arg1, t_arg arg2,
+							const unsigned char reg_pos, t_pc *pc)
+{
+	invert_bytes(arg1.arg, arg1.type == DIR_CODE ? IND_SIZE : REG_SIZE);
+	invert_bytes(arg2.arg, arg2.type == DIR_CODE ? IND_SIZE : REG_SIZE);
+	if (arg1.type == DIR_CODE)
+		*((REG_CAST *)arg1.arg) = *((IND_CAST *)arg1.arg);
+	if (arg2.type == DIR_CODE)
+		*((REG_CAST *)arg2.arg) = *((IND_CAST *)arg2.arg);
+	load_indirect(arg1, arg2, reg_pos, pc);
+	pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
 }
 
 void		instruc_core_lldi(t_pc *pc)
@@ -70,19 +80,14 @@ void		instruc_core_lldi(t_pc *pc)
 		get_arg(ocp, pos, 0, &arg1);
 		get_arg(ocp, pos, arg1.len, &arg2);
 		reg_pos = g_mem[(pos + 1 + 1 + arg1.len + arg2.len) % MEM_SIZE] - 1;
-		if (get_arg_value(&arg1, pc, 0) && get_arg_value(&arg2, pc, 0) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg1, pc, 0) &&
+			get_arg_value(&arg2, pc, 0) && reg_pos < REG_NUMBER)
 		{
-			invert_bytes(arg1.arg, arg1.type == DIR_CODE ? IND_SIZE : REG_SIZE);
-			invert_bytes(arg2.arg, arg2.type == DIR_CODE ? IND_SIZE : REG_SIZE);
-			if (arg1.type == DIR_CODE)
-				*((REG_CAST *)arg1.arg) = *((IND_CAST *)arg1.arg);
-			if (arg2.type == DIR_CODE)
-				*((REG_CAST *)arg2.arg) = *((IND_CAST *)arg2.arg);
-			load_indirect(arg1, arg2, reg_pos, pc);
-			pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
+			convert_args_little_endian_load(arg1, arg2, reg_pos, pc);
 		}
 		pc->pc = (pos + 1 + 1 + arg1.len + arg2.len + 1) % MEM_SIZE;
 	}
 	else
-		pc->pc = (pos + 1 + 1 + get_size_arg(ocp, 0, 0) + get_size_arg(ocp, 1, 0) + get_size_arg(ocp, 2, 0)) % MEM_SIZE;//and + ocp + arg1 + arg2 + rg
+		pc->pc = (pos + 1 + 1 + get_size_arg(ocp, 0, 0) +
+				get_size_arg(ocp, 1, 0) + get_size_arg(ocp, 2, 0)) % MEM_SIZE;
 }

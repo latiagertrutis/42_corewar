@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/28 17:08:35 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/29 20:39:31 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 21:25:21 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,16 @@
 static char	verify_ocp(const unsigned char ocp)
 {
 	if ((0xC0 & ocp) == 0x0 || (0xC0 & ocp) == 0x80 || (0xC0 & ocp) == 0xC0 ||
-	    (0x30 & ocp) == 0x0 ||
-	    (0xC & ocp) == 0x0 || (0xC & ocp) == 0xC)
+		(0x30 & ocp) == 0x0 ||
+		(0xC & ocp) == 0x0 || (0xC & ocp) == 0xC)
 		return (0);
 	return (1);
 }
 
-static void	store_indirect(const unsigned char reg_pos, const t_arg arg2, const t_arg arg3, t_pc *pc)
+static void	store_indirect(const unsigned char reg_pos, const t_arg arg2,
+							const t_arg arg3, t_pc *pc)
 {
-	int 			inc;
+	int				inc;
 	unsigned int	pos;
 	unsigned char	i;
 	REG_CAST		value2;
@@ -44,13 +45,26 @@ static void	store_indirect(const unsigned char reg_pos, const t_arg arg2, const 
 			i++;
 		}
 	}
-	ft_printf("P %4d | sti r%d %d %d\n       | -> store to %d + %d = %d (with pc and mod %d)\n",
-	          pc->pc_num + 1, reg_pos + 1, value2, value3, value2, value3, value2 + value3, inc);
+	ft_printf("P %4d | sti r%d %d %d\n       | -> store to %d + %d = %d (\
+with pc and mod %d)\n", pc->pc_num + 1, reg_pos + 1,
+				value2, value3, value2, value3, value2 + value3, inc);
+}
+
+static void	convert_args_little_endian_store(const unsigned char reg_pos,
+							t_arg arg2, t_arg arg3, t_pc *pc)
+{
+	invert_bytes(arg2.arg, arg2.type == DIR_CODE ? IND_SIZE : REG_SIZE);
+	invert_bytes(arg3.arg, arg3.type == DIR_CODE ? IND_SIZE : REG_SIZE);
+	if (arg2.type == DIR_CODE)
+		*((REG_CAST *)arg2.arg) = *((IND_CAST *)arg2.arg);
+	if (arg3.type == DIR_CODE)
+		*((REG_CAST *)arg3.arg) = *((IND_CAST *)arg3.arg);
+	store_indirect(reg_pos, arg2, arg3, pc);
 }
 
 void		instruc_core_sti(t_pc *pc)
 {
-	unsigned char 	ocp;
+	unsigned char	ocp;
 	t_arg			arg2;
 	t_arg			arg3;
 	unsigned char	reg_pos;
@@ -65,20 +79,14 @@ void		instruc_core_sti(t_pc *pc)
 		arg3 = (t_arg){2, 0, 0, 0x0, {0}};
 		get_arg(ocp, pos, 1, &arg2);
 		get_arg(ocp, pos, 1 + arg2.len, &arg3);
-		if (get_arg_value(&arg2, pc, 1) && get_arg_value(&arg3, pc, 1) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg2, pc, 1) &&
+			get_arg_value(&arg3, pc, 1) && reg_pos < REG_NUMBER)
 		{
-			invert_bytes(arg2.arg, arg2.type == DIR_CODE ? IND_SIZE : REG_SIZE);
-			invert_bytes(arg3.arg, arg3.type == DIR_CODE ? IND_SIZE : REG_SIZE);
-			if (arg2.type == DIR_CODE)
-				*((REG_CAST *)arg2.arg) = *((IND_CAST *)arg2.arg);
-			if (arg3.type == DIR_CODE)
-				*((REG_CAST *)arg3.arg) = *((IND_CAST *)arg3.arg);
-			store_indirect(reg_pos, arg2, arg3, pc);
+			convert_args_little_endian_store(reg_pos, arg2, arg3, pc);
 		}
 		pc->pc = (pos + 1 + 1 + 1 + arg2.len + arg3.len) % MEM_SIZE;
-//		ft_printf(" y ahora esta en: %d\n", pc->pc);
 	}
 	else
-		pc->pc = (pos + 1 + 1 + get_size_arg(ocp, 0, 0) + get_size_arg(ocp, 1, 0) + get_size_arg(ocp, 2, 0)) % MEM_SIZE;//and + ocp + arg1 + arg2 + rg
-
+		pc->pc = (pos + 1 + 1 + get_size_arg(ocp, 0, 0) +
+				get_size_arg(ocp, 1, 0) + get_size_arg(ocp, 2, 0)) % MEM_SIZE;
 }

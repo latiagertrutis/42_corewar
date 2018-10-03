@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/27 20:19:55 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/29 20:50:22 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 19:49:42 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,15 @@
 
 static char	verify_ocp(const unsigned char ocp)
 {
-	if ((0xC0 & ocp) == 0x0 ||//1
-	    (0x30 & ocp) == 0x0 ||//2
-	    (0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)//3
+	if ((0xC0 & ocp) == 0x0 ||
+		(0x30 & ocp) == 0x0 ||
+		(0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)
 		return (0);
 	return (1);
 }
 
-static void	apply_and(const t_arg arg1, const t_arg arg2, const t_pc *pc, const unsigned char reg_pos)
+static void	apply_and(const t_arg arg1, const t_arg arg2, t_pc *pc,
+						const unsigned char reg_pos)
 {
 	REG_CAST	value1;
 	REG_CAST	value2;
@@ -31,7 +32,9 @@ static void	apply_and(const t_arg arg1, const t_arg arg2, const t_pc *pc, const 
 	*((REG_CAST *)(pc->reg[reg_pos])) = value1 & value2;
 	invert_bytes(&value1, REG_SIZE);
 	invert_bytes(&value2, REG_SIZE);
-	ft_printf("P %4d | and %d %d r%d\n", pc->pc_num + 1, value1, value2, reg_pos + 1);
+	ft_printf("P %4d | and %d %d r%d\n",
+				pc->pc_num + 1, value1, value2, reg_pos + 1);
+	pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
 }
 
 void		instruc_core_and(t_pc *pc)
@@ -51,14 +54,18 @@ void		instruc_core_and(t_pc *pc)
 		get_arg(ocp, pos, 0, &arg1);
 		get_arg(ocp, pos, arg1.len, &arg2);
 		reg_pos = g_mem[(pos + 2 + arg1.len + arg2.len) % MEM_SIZE] - 1;
-		if (get_arg_value(&arg1, pc, 1) && get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg1, pc, 1) &&
+			get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
 		{
 			apply_and(arg1, arg2, pc, reg_pos);
-			pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
 		}
-		pc->pc = (pos + 1 + 1 + arg1.len + arg2.len + 1) % MEM_SIZE;//and + ocp + arg1 + arg2 + rg
-//		ft_printf("and: y ahora el pc esta en %d\n", pc->pc);
+		pc->pc = (pos + 1 + 1 + arg1.len + arg2.len + 1) % MEM_SIZE;
 	}
 	else
-		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) + get_size_arg(ocp, 1, 1) + get_size_arg(ocp, 2, 1)) % MEM_SIZE;//and + ocp + arg1 + arg2 + arg3
+		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) +
+			get_size_arg(ocp, 1, 1) + get_size_arg(ocp, 2, 1)) % MEM_SIZE;
 }
+
+/*
+** and + ocp + arg1 + arg2 + rg
+*/
