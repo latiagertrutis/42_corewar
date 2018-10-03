@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/24 21:48:04 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/03 14:15:04 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 16:11:05 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,10 @@ void			core_aff(t_pc *pc);
 
 void			graphics_core_sti(t_pc *pc);
 void			graphics_core_st(t_pc *pc);
+void			init_graph(void);
+void			add_frame(void);
+void			end_frame(void);
+
 
 /*
 ******************************INSTRUC_FUNCTIONS*****************************************

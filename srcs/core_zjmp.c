@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 14:54:03 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/28 18:42:47 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:54:52 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void			core_zjmp(t_pc *pc)
 	if (pc->carry)
 	{
 		pc->pc = ft_mod(pos + (charge_ind(pos + 1) % IDX_MOD), MEM_SIZE);
-//		ft_printf("zjmp: EL pc ha saltado a %d\n", pc->pc);
 	}
 	else
 		pc->pc = (pos + 1 + IND_SIZE) % MEM_SIZE;

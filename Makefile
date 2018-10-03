@@ -6,7 +6,7 @@
 #    By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/04 20:25:41 by mrodrigu          #+#    #+#              #
-#    Updated: 2018/10/03 14:15:27 by mrodrigu         ###   ########.fr        #
+#    Updated: 2018/10/03 16:11:52 by mrodrigu         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -56,6 +56,7 @@ FUNCS =	main.c \
 		graphics_core_sti.c \
 		graphics_core_st.c \
 		graphic_thread.c \
+		graphics_conection.c \
 		instruc_core_live.c \
 		instruc_core_ld.c \
 		instruc_core_st.c \

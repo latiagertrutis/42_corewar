@@ -6,15 +6,16 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/20 16:14:50 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/25 16:20:40 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:57:03 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "basic_corewar.h"
 
-static void		get_ind(const t_pc *pc, const IND_CAST ind, t_arg *arg, const unsigned char restriction)
+static void		get_ind(const t_pc *pc, const IND_CAST ind, t_arg *arg,
+						const unsigned char restriction)
 {
-	int 			inc;
+	int				inc;
 	unsigned char	i;
 
 	if (restriction)
@@ -34,7 +35,8 @@ static void		get_ind(const t_pc *pc, const IND_CAST ind, t_arg *arg, const unsig
 	}
 }
 
-char			get_arg_value(t_arg *arg, const t_pc *pc, const unsigned char restriction)
+char			get_arg_value(t_arg *arg, const t_pc *pc,
+								const unsigned char restriction)
 {
 	unsigned char	i;
 	IND_CAST		ind;

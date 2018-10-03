@@ -6,11 +6,24 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/19 17:55:27 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/28 18:41:16 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:45:50 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "basic_corewar.h"
+
+static void	charge_ind_with_mod(const int inc, const unsigned char reg_pos1,
+								t_pc *pc)
+{
+	unsigned char i;
+
+	i = 0;
+	while (i < REG_SIZE)
+	{
+		g_mem[ft_mod(inc + i, MEM_SIZE)] = pc->reg[reg_pos1][i];
+		i++;
+	}
+}
 
 static void	store_in_ram(const unsigned char reg_pos1, t_pc *pc)
 {
@@ -20,7 +33,7 @@ static void	store_in_ram(const unsigned char reg_pos1, t_pc *pc)
 	int				inc;
 
 	aux_pc = pc->pc + 2;
-	if ((aux_pc + 1 + IND_SIZE) < MEM_SIZE)//jumping the registre (1st arg)
+	if ((aux_pc + 1 + IND_SIZE) < MEM_SIZE)
 		*((IND_CAST *)board_pos) = *((IND_CAST *)(g_mem + aux_pc + 1));
 	else
 	{
@@ -36,21 +49,15 @@ static void	store_in_ram(const unsigned char reg_pos1, t_pc *pc)
 	if ((inc + REG_SIZE) < MEM_SIZE && inc >= 0)
 		*((REG_CAST *)(g_mem + inc)) = *((REG_CAST *)(pc->reg[reg_pos1]));
 	else
-	{
-		i = 0;
-		while (i < REG_SIZE)
-		{
-			g_mem[ft_mod(inc + i, MEM_SIZE)] = pc->reg[reg_pos1][i];
-			i++;
-		}
-	}
-	pc->pc = (aux_pc + 1 + IND_SIZE) % MEM_SIZE;//st + ocp + rg + ind
+		charge_ind_with_mod(inc, reg_pos1, pc);
+	pc->pc = (aux_pc + 1 + IND_SIZE) % MEM_SIZE;
 }
 
-static void	store_in_reg(const unsigned char reg_pos1, const unsigned char reg_pos2, t_pc *pc)
+static void	store_in_reg(const unsigned char reg_pos1,
+						const unsigned char reg_pos2, t_pc *pc)
 {
 	*((REG_CAST *)pc->reg[reg_pos2]) = *((REG_CAST *)pc->reg[reg_pos1]);
-	pc->pc = (pc->pc + 1 + 1 + 1 + 1) % MEM_SIZE; //st + ocp + rg1 + rg2
+	pc->pc = (pc->pc + 1 + 1 + 1 + 1) % MEM_SIZE;
 }
 
 void		core_st(t_pc *pc)
@@ -62,10 +69,19 @@ void		core_st(t_pc *pc)
 
 	pos = pc->pc;
 	ocp = g_mem[(pos + 1) % MEM_SIZE];
-	if ((0xF0 & ocp) == 0x70 && (reg_pos1 = g_mem[(pos + 2) % MEM_SIZE] - 1) < REG_NUMBER)
+	if ((0xF0 & ocp) == 0x70 &&
+		(reg_pos1 = g_mem[(pos + 2) % MEM_SIZE] - 1) < REG_NUMBER)
 		store_in_ram(reg_pos1, pc);
-	else if ((0xF0 & ocp) == 0x50 && (reg_pos1 = g_mem[(pos + 2) % MEM_SIZE] - 1) < REG_NUMBER && (reg_pos2 = g_mem[(pos + 3) % MEM_SIZE] - 1) < REG_NUMBER)
+	else if ((0xF0 & ocp) == 0x50 &&
+			(reg_pos1 = g_mem[(pos + 2) % MEM_SIZE] - 1) < REG_NUMBER &&
+			(reg_pos2 = g_mem[(pos + 3) % MEM_SIZE] - 1) < REG_NUMBER)
 		store_in_reg(reg_pos1, reg_pos2, pc);
 	else
-		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) + get_size_arg(ocp, 1, 1)) % MEM_SIZE;
+		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) +
+				get_size_arg(ocp, 1, 1)) % MEM_SIZE;
 }
+
+/*
+** line 52: st + ocp + rg + ind
+** line 58: st + ocp + rg1 + rg2
+*/

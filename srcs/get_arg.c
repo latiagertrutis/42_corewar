@@ -6,13 +6,14 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/20 15:28:40 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/25 16:20:41 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:56:17 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "basic_corewar.h"
 
-static void	cast_value(const unsigned int pos, const unsigned char prev_siz, t_arg *arg)
+static void	cast_value(const unsigned int pos, const unsigned char prev_siz,
+						t_arg *arg)
 {
 	if (arg->len == 1)
 		*((int8_t *)(arg->arg)) = *((int8_t *)(g_mem + pos + 2 + prev_siz));
@@ -24,7 +25,8 @@ static void	cast_value(const unsigned int pos, const unsigned char prev_siz, t_a
 		*((int64_t *)(arg->arg)) = *((int64_t *)(g_mem + pos + 2 + prev_siz));
 }
 
-void		get_arg(const unsigned char ocp, const unsigned int pos, const unsigned char prev_siz, t_arg *arg)
+void		get_arg(const unsigned char ocp, const unsigned int pos,
+					const unsigned char prev_siz, t_arg *arg)
 {
 	unsigned char i;
 

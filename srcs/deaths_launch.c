@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/28 19:39:55 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/28 21:39:56 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:55:27 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ static void	exe_pc(t_op *ops)
 
 void		deaths_launch(void)
 {
-	int 	i;
-	t_op			ops[NB_INSTRUCTIONS];
+	int		i;
+	t_op	ops[NB_INSTRUCTIONS];
 
 	init_func(ops);
 	while (g_pc)

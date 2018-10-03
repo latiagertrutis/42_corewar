@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/20 16:57:11 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/09/25 16:20:41 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 15:54:16 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,19 @@
 
 static char	verify_ocp(const unsigned char ocp)
 {
-	if ((0xC0 & ocp) == 0x0 ||//1
-	    (0x30 & ocp) == 0x0 ||//2
-	    (0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)//3
+	if ((0xC0 & ocp) == 0x0 ||
+		(0x30 & ocp) == 0x0 ||
+		(0xC & ocp) == 0x0 || (0xC & ocp) == 0x8 || (0xC & ocp) == 0xC)
 		return (0);
 	return (1);
 }
 
-static void	apply_xor(const t_arg arg1, const t_arg arg2, const t_pc *pc, const unsigned char reg_pos)
+static void	apply_xor(const t_arg arg1, const t_arg arg2, t_pc *pc,
+						const unsigned char reg_pos)
 {
-	*((REG_CAST *)(pc->reg[reg_pos])) = *((REG_CAST *)(arg1.arg)) ^ *((REG_CAST *)(arg2.arg));
+	*((REG_CAST *)(pc->reg[reg_pos])) = *((REG_CAST *)(arg1.arg)) ^
+										*((REG_CAST *)(arg2.arg));
+	pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
 }
 
 void		core_xor(t_pc *pc)
@@ -43,13 +46,18 @@ void		core_xor(t_pc *pc)
 		get_arg(ocp, pos, 0, &arg1);
 		get_arg(ocp, pos, arg1.len, &arg2);
 		reg_pos = g_mem[(pos + 2 + arg1.len + arg2.len) % MEM_SIZE] - 1;
-		if (get_arg_value(&arg1, pc, 1) && get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg1, pc, 1) &&
+			get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
 		{
 			apply_xor(arg1, arg2, pc, reg_pos);
-			pc->carry = (*((REG_CAST *)(pc->reg[reg_pos]))) ? 0x0 : 0x1;
 		}
-		pc->pc = (pos + 1 + 1 + arg1.len + arg2.len + 1) % MEM_SIZE;//and + ocp + arg1 + arg2 + rg
+		pc->pc = (pos + 1 + 1 + arg1.len + arg2.len + 1) % MEM_SIZE;
 	}
 	else
-		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) + get_size_arg(ocp, 1, 1) + get_size_arg(ocp, 2, 1)) % MEM_SIZE;//and + ocp + arg1 + arg2 + arg3
+		pc->pc = (pc->pc + 1 + 1 + get_size_arg(ocp, 0, 1) +
+				get_size_arg(ocp, 1, 1) + get_size_arg(ocp, 2, 1)) % MEM_SIZE;
 }
+
+/*
+** and + ocp + arg1 + arg2 + arg3
+*/
