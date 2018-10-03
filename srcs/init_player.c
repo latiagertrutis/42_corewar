@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 19:48:58 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/02 15:59:02 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 18:31:36 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,13 @@ static uint32_t	get_prog_size(const int fd)
 	return (size);
 }
 
-static void		load_prog(const int fd, const unsigned int player_nb, const uint32_t prog_size)
+static void		load_prog(const int fd, const unsigned int player_nb,
+							const uint32_t prog_size)
 {
 	int		rd;
-	if((rd = read(fd, g_mem + (player_nb * (MEM_SIZE / g_n_players)), prog_size)) < 0)
+
+	if ((rd =
+	read(fd, g_mem + (player_nb * (MEM_SIZE / g_n_players)), prog_size)) < 0)
 	{
 		close(fd);
 		ft_error("Error: read failed in load_prog\n");
@@ -95,5 +98,4 @@ void			init_player(const char *str, const t_flag_value *f_value)
 		g_players[player_nb].player_nb = f_value->player_nb[player_nb];
 	else
 		g_players[player_nb].player_nb = -(player_nb + 1);
-//	invert_bytes(&(g_players[player_nb].player_nb), sizeof(int32_t));
 }
