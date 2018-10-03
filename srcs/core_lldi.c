@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 17:14:43 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/03 15:17:49 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/04 01:04:47 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void		core_lldi(t_pc *pc)
 		get_arg(ocp, pos, 0, &arg1);
 		get_arg(ocp, pos, arg1.len, &arg2);
 		reg_pos = g_mem[(pos + 1 + 1 + arg1.len + arg2.len) % MEM_SIZE] - 1;
-		if (get_arg_value(&arg1, pc, 0) &&
-			get_arg_value(&arg2, pc, 0) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg1, pc, 1) &&
+			get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
 		{
 			load_indirect(arg1, arg2, reg_pos, pc);
 		}
@@ -81,4 +81,6 @@ void		core_lldi(t_pc *pc)
 
 /*
 ** and + ocp + arg1 + arg2 + rg
+**line 70-71: im aplying the restriction becose the given does,
+** does it make sense?
 */

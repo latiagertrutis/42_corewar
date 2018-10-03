@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/24 21:48:04 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/03 21:18:50 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/03 22:09:45 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ extern unsigned char	g_winner;
 ******************************FUNCTIONS*****************************************
 */
 
+void					print_usage(void);
 int						set_flags(const int ac, const char **av,
 									unsigned int *flags, t_flag_value *f_value);
 void					init_player(const char *str,
