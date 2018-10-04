@@ -6,7 +6,7 @@
 /*   By: mrodrigu <mrodrigu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/30 21:39:29 by mrodrigu          #+#    #+#             */
-/*   Updated: 2018/10/03 21:32:35 by mrodrigu         ###   ########.fr       */
+/*   Updated: 2018/10/04 18:34:46 by mrodrigu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@ void		instruc_core_lldi(t_pc *pc)
 		get_arg(ocp, pos, 0, &arg1);
 		get_arg(ocp, pos, arg1.len, &arg2);
 		reg_pos = g_mem[(pos + 1 + 1 + arg1.len + arg2.len) % MEM_SIZE] - 1;
-		if (get_arg_value(&arg1, pc, 0) &&
-			get_arg_value(&arg2, pc, 0) && reg_pos < REG_NUMBER)
+		if (get_arg_value(&arg1, pc, 1) &&
+			get_arg_value(&arg2, pc, 1) && reg_pos < REG_NUMBER)
 		{
 			convert_args_little_endian_load(arg1, arg2, reg_pos, pc);
 		}
